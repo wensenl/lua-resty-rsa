@@ -1,7 +1,7 @@
 Name
 =============
 
-lua-resty-rsa - RSA functions for LuaJIT. support public key decrypt, private key encrypt. support public key encrypt, private key decrypt. 
+RSA encrypt/decrypt & sign/verify for OpenResty/LuaJIT. Support public key decrypt, private key encrypt. Support public key encrypt, private key decrypt.  
 
 Status
 ======
