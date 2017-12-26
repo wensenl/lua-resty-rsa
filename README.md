@@ -82,7 +82,8 @@ Synopsis
     LAPWpiDca8StTfEphoKEVfCPHaUk0MlBHR4lCrnAkEtz23vhZKWhFw==
     -----END RSA PRIVATE KEY-----
     ]]--
-
+	  
+	 --public key encrypt, private key decrypt
     local pub, err = resty_rsa:new({ public_key = rsa_public_key })
     if not pub then
         ngx.say("new rsa err: ", err)
@@ -102,7 +103,36 @@ Synopsis
     end
     local decrypted = priv:decrypt(encrypted)
     ngx.say(decrypted == "hello")
-
+    
+    --public key decrypt, private key encrypt
+    local priv, err = resty_rsa:new({ 
+	       private_key = rsa_priv_key,
+	       crypt = "encrypt",})
+    if not priv then
+        ngx.say("private_key new rsa err: ", err)
+        return
+    end
+    local encrypted, err = priv:encrypt("hello world!")
+    if not encrypted then
+        ngx.say("private_key failed to encrypt: ", err)
+        return
+    end
+    ngx.say("private_key encrypted length: ", #encrypted)
+    local pub, err = resty_rsa:new({ 
+	    public_key = rsa_public_key,
+	    crypt = "decrypt",})
+    if not pub then
+        ngx.say("public_key new rsa err: ", err)
+        return
+    end
+    ngx.say("public_key new rsa success\n")
+    local decrypted = pub:decrypt(encrypted)
+    if not decrypted then
+        ngx.say("public_key failed to decrypt")
+        return
+    end
+    ngx.say("public_key decrypted: " .. decrypted)
+    
     local algorithm = "SHA1"
     local priv, err = resty_rsa:new({ private_key = rsa_priv_key, algorithm = algorithm })
     if not priv then
