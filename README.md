@@ -83,7 +83,7 @@ Synopsis
     -----END RSA PRIVATE KEY-----
     ]]--
 	  
-	 --public key encrypt, private key decrypt
+	  --public key encrypt, private key decrypt
     local pub, err = resty_rsa:new({ public_key = rsa_public_key })
     if not pub then
         ngx.say("new rsa err: ", err)
@@ -101,7 +101,7 @@ Synopsis
         ngx.say("new rsa err: ", err)
         return
     end
-    local decrypted = priv:decrypt(encrypted)
+    local decrypted, err = priv:decrypt(encrypted)
     ngx.say(decrypted == "hello")
     
     --public key decrypt, private key encrypt
@@ -126,9 +126,9 @@ Synopsis
         return
     end
     ngx.say("public_key new rsa success\n")
-    local decrypted = pub:decrypt(encrypted)
+    local decrypted, err = pub:decrypt(encrypted)
     if not decrypted then
-        ngx.say("public_key failed to decrypt")
+        ngx.say("public_key failed to decrypt, err: ", err)
         return
     end
     ngx.say("public_key decrypted: " .. decrypted)
