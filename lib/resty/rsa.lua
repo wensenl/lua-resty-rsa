@@ -288,6 +288,9 @@ function _M.decrypt(self, str)
     ffi.copy(c_str, str)
     --
     if self.is_pub then
+        if self.padding == PADDING.RSA_PKCS1_OAEP_PADDING then
+            return nil, "public key decrypt padding only support RSA_PKCS1_PADDING or RSA_NO_PADDING"
+        end
         ret = C.RSA_public_decrypt(#str, c_str, self.buf, self.rsa, self.padding)
     else
         ret = C.RSA_private_decrypt(#str, c_str, self.buf, self.rsa, self.padding)
@@ -314,6 +317,9 @@ function _M.encrypt(self, str)
     if self.is_pub then
         ret = C.RSA_public_encrypt(#str, c_str, self.buf, self.rsa, self.padding)
     else
+        if self.padding == PADDING.RSA_PKCS1_OAEP_PADDING then
+            return nil, "private key encrypt padding only support RSA_PKCS1_PADDING or RSA_NO_PADDING"
+        end
         ret = C.RSA_private_encrypt(#str, c_str, self.buf, self.rsa, self.padding)
     end
     if ret < 0 then
